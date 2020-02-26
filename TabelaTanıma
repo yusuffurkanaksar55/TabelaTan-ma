@@ -1,0 +1,25 @@
+import cv2 as cv
+import numpy as np
+
+img = cv.imread('trafik2.jpeg',cv.IMREAD_GRAYSCALE)
+font = cv.FONT_HERSHEY_SIMPLEX
+
+_,threshold = cv.threshold(img,240,255,cv.THRESH_BINARY)#belli bir parametre almak için trh ayarlanmalı
+
+contours,_ = cv.findContours(threshold,cv.RETR_TREE,cv.CHAIN_APPROX_SIMPLE)
+#cv.CHA...NONE olan parametre başlangıç ve bitiş yerini alır sadece
+#bu sayede az memory kullanmış oluruzfor cnt in contours:
+for cnt in contours:
+    approx = cv.approxPolyDP(cnt,0.01*cv.arcLength(cnt,True),True)
+    cv.drawContours(img,[approx],0,(200),3)
+    if len(approx) == 3:
+        #print(approx)
+        #print(approx.ravel())
+        x = approx.ravel()[0]
+        y = approx.ravel()[1]
+        cv.putText(img,"Ucgen",(x,y),font,1,(0),)
+    
+    
+        
+cv.imshow('result',img)
+cv.imshow('thr', threshold)
